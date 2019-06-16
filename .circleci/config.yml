@@ -9,15 +9,14 @@ jobs:
   build:
     executor: ge-xecutor
 
+    environment:
+      JVM_OPTS: -Xmx4G
+
     steps:
       # Clone the repo
       - checkout:
           path: ~/repo
 
-    environment:
-      JVM_OPTS: -Xmx4G
-
-    steps:
       - run:
           name: Build and test
           command: ./scripts/build.sh
