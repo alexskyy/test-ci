@@ -26,7 +26,7 @@ else
     exit $?
 fi
 
-VERSION_NAME=$(versionNameDeclaredInGradlefile "CbyGE/app/build.gradle")
+VERSION_NAME=$(versionNameDeclaredInGradlefile "app/build.gradle")
 
 OUTPUTDIR=$PWD/app/build/outputs/apk
 DIGIOPS_DEV_APK="DigOps.Dev.apk"

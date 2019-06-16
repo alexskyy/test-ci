@@ -1,0 +1,11 @@
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        applicationId "com.ge.cbyge"
+        minSdkVersion 23
+        targetSdkVersion 26
+        multiDexEnabled true
+        versionName "5.2.4"
+}
+}

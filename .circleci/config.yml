@@ -1,0 +1,88 @@
+version: 2.1
+executors:
+  ge-xecutor:
+    docker:
+      - image: circleci/android:api-28
+    working_directory: ~/repo/
+
+jobs:
+  build:
+    executor: ge-xecutor
+
+    environment:
+      JVM_OPTS: -Xmx4G
+
+    steps:
+      - run:
+          name: Build and test
+          command: ./scripts/build.sh
+      - persist_to_workspace:
+          root: . 
+          paths:
+            - scripts
+            - app/build.gradle
+            - app/build/outputs/apk/*/*/
+
+      - run:
+          command: |
+            ls -l app/build/outputs/apk/*/*/
+
+  deliver:
+    executor: ge-xecutor
+
+    steps:
+      - attach_workspace:
+            at: ./
+
+      - run:
+          command: |
+            ls -lR .
+
+      - run:
+          name: Deliver
+          command: ./scripts/deliver.sh
+
+workflows:
+  version: 2.1
+  test-build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                  - develop
+                  - master
+
+  feature-build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+                - master
+      - deliver:
+          requires:
+              - build
+          filters:
+            branches:
+              only:
+                  - develop
+                  - master
+
+  release-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only:
+                - develop
+                - master
+      - deliver:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
