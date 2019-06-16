@@ -9,6 +9,11 @@ jobs:
   build:
     executor: ge-xecutor
 
+    steps:
+      # Clone the repo
+      - checkout:
+          path: ~/repo
+
     environment:
       JVM_OPTS: -Xmx4G
 
