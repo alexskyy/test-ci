@@ -78,7 +78,9 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: /.*/
+              only:
+                - develop
+                - master
       - deliver:
           requires:
             - build
