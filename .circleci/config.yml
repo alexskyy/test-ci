@@ -24,8 +24,8 @@ jobs:
           root: .
           paths:
             - scripts
-            - app/build.gradle
-            - app/build/outputs/apk/*/*/
+            - CbyGE/app/build.gradle
+            - CbyGE/app/build/outputs/apk/*/*/
 
       - run:
           command: |
