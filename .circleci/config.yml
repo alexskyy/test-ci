@@ -24,12 +24,12 @@ jobs:
           root: .
           paths:
             - scripts
-            - app/build.gradle
-            - app/build/outputs/apk/*/*/
+            - CbyGE/app/build.gradle
+            - CbyGE/app/build/outputs/apk/*/*/
 
       - run:
           command: |
-            ls -l app/build/outputs/apk/*/*/
+            ls -l CbyGE/app/build/outputs/apk/*/*/
 
   deliver:
     executor: ge-xecutor
