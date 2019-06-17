@@ -65,14 +65,11 @@ workflows:
               only:
                 - develop
                 - master
+            tags:
+              ignore: /.*/
       - deliver:
           requires:
               - build
-          filters:
-            branches:
-              only:
-                  - develop
-                  - master
 
   release-build:
     jobs:
@@ -81,12 +78,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              only:
-                - develop
-                - master
+              ignore: /.*/
       - deliver:
           requires:
             - build
-          filters:
-            tags:
-              only: /^v.*/
