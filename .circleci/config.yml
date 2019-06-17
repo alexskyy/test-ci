@@ -57,7 +57,7 @@ workflows:
                 - develop
                 - master
 
-  release-build:
+  feature-build:
     jobs:
       - build:
           filters:
@@ -71,25 +71,3 @@ workflows:
           requires:
             - build
 
-  feature-build:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: //
-            branches:
-              only:
-                - develop
-                - master
-      - deliver:
-          requires:
-            - build
-
-#          filters:
-#            tags:
-#              only: /v.*/
-#            branches:
-#              only:
-#                - develop
-#                - master
-#ignore: /(^(?!(develop|master)).*$)/
