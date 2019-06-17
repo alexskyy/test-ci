@@ -21,7 +21,7 @@ jobs:
           name: Build and test
           command: ./scripts/build.sh
       - persist_to_workspace:
-          root: . 
+          root: .
           paths:
             - scripts
             - app/build.gradle
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - attach_workspace:
-            at: ./
+          at: ./
 
       - run:
           command: |
@@ -54,22 +54,42 @@ workflows:
           filters:
             branches:
               ignore:
-                  - develop
-                  - master
+                - develop
+                - master
 
-  feature-build:
+  release-build:
     jobs:
       - build:
           filters:
             tags:
               only: /v.*/
             branches:
-              ignore: /(^(?!(develop|master)).*$)/
+              only:
+                - develop
+                - master
       - deliver:
           requires:
             - build
+
+  feature-build:
+    jobs:
+      - build:
           filters:
             tags:
-              only: /v.*/
+              only: //
             branches:
-              ignore: /(^(?!(develop|master)).*$)/
+              only:
+                - develop
+                - master
+      - deliver:
+          requires:
+            - build
+
+#          filters:
+#            tags:
+#              only: /v.*/
+#            branches:
+#              only:
+#                - develop
+#                - master
+#ignore: /(^(?!(develop|master)).*$)/
