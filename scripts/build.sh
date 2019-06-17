@@ -1,17 +1,23 @@
 #!/bin/bash
 set +x
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [[ $CIRCLECI == "true" ]]; then
     echo "$0: CircleCI detected"
 
     PULL_REQUEST=$CIRCLE_PULL_REQUEST
+    BRANCH=$CIRCLE_BRANCH
     BRANCH_TAG=$CIRCLE_TAG
+    if [ $BRANCH_TAG ]; then
+        # if build triggered off TAG, then BRANCH is empty
+        # deduct branch name from TAG
+        BRANCH=$(echo $BRANCH_TAG | cut -d '-' -f1)
+    fi
     BUILD_NUMBER=$(($CIRCLE_BUILD_NUM + 5000))
 else
     echo "$0: No CI system detected"
 
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)
     PULL_REQUEST="false"
     BUILD_NUMBER=9999
 fi
