@@ -61,12 +61,15 @@ workflows:
     jobs:
       - build:
           filters:
-            branches:
-              only:
-                - develop
-                - master
             tags:
               only: /v.*/
+            branches:
+              ignore: /(^(?!(develop|master)).*$)/
       - deliver:
           requires:
-              - build
+            - build
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /(^(?!(develop|master)).*$)/
