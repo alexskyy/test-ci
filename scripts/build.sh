@@ -1,6 +1,4 @@
 #!/bin/bash
-set +x
-
 
 if [[ $CIRCLECI == "true" ]]; then
     echo "$0: CircleCI detected"
@@ -9,16 +7,23 @@ if [[ $CIRCLECI == "true" ]]; then
     BRANCH=$CIRCLE_BRANCH
     BRANCH_TAG=$CIRCLE_TAG
     if [ $BRANCH_TAG ]; then
-        # if build triggered off TAG, then BRANCH is empty
-        # deduct branch name from TAG
-        BRANCH=$(echo $BRANCH_TAG | cut -d '-' -f1)
+        # if build is triggered by a TAG, then BRANCH is empty
+        # deduct branch name from TAG itself
+        case $(echo $BRANCH_TAG | sed -e 's/[-|_]v.*$//') in
+             release)
+                  BRANCH="master"
+                  ;;
+             sprint)
+                  BRANCH="develop"
+                   ;;
+        esac
     fi
-    BUILD_NUMBER=$(($CIRCLE_BUILD_NUM + 5000))
+    BUILD_NUMBER=$(($CIRCLE_BUILD_NUM + 50000))
 else
     echo "$0: No CI system detected"
 
-    BRANCH=$(git rev-parse --abbrev-ref HEAD)
     PULL_REQUEST="false"
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)
     BUILD_NUMBER=9999
 fi
 
@@ -27,7 +32,7 @@ BUILD_FLAGS="-PdisablePreDex -xlint --no-daemon"
 
 if [[ $BRANCH == "master" ]]; then
     if [ $BRANCH_TAG ]; then
-        BUILD_TRACK=""
+        BUILD_TRACK="DigOps.Release"
         BUILD_TARGET="assembleProdRelease"
     else
         BUILD_TRACK="DigOps.Dev"
@@ -47,5 +52,5 @@ else
 fi
 
 echo "$0: Building $BUILD_TRACK on $BRANCH "
-export BUILD_NUMBER=$BUILD_NUMBER && export BUILD_SUFFIX=$BUILD_TRACK && ./gradlew $BUILD_TARGET $BUILD_FLAGS
+env BUILD_NUMBER=$BUILD_NUMBER BUILD_SUFFIX=$BUILD_TRACK ./gradlew $BUILD_TARGET $BUILD_FLAGS
 exit $?
